@@ -1,0 +1,4 @@
+D:\HNU books\project term 5\project sec2\obj\Debug\net8.0-windows\SSRMS.GeneratedMSBuildEditorConfig.editorconfig
+D:\HNU books\project term 5\project sec2\obj\Debug\net8.0-windows\SSRMS.AssemblyInfoInputs.cache
+D:\HNU books\project term 5\project sec2\obj\Debug\net8.0-windows\SSRMS.AssemblyInfo.cs
+D:\HNU books\project term 5\project sec2\obj\Debug\net8.0-windows\SSRMS.csproj.CoreCompileInputs.cache

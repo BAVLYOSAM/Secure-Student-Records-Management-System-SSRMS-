@@ -1,223 +1,96 @@
-# 🔐 Secure Student Records Management System (SSRMS)
+# SSRMS - Secure Student Records Management System
 
-A secure database-driven system for managing student academic records while enforcing advanced Database Security concepts including RBAC, MLS, Flow Control, Inference Control, Encryption, and Role Request Management.
+## Overview
+A Windows Forms application with a modern dark-themed dashboard and role-based access control for university student record management.
 
-Developed as part of the **Database Security Course**.
+## Features
+- Login system with hashed passwords
+- Admin, Instructor, TA, Student, and Guest roles
+- Role-based sidebar navigation and RBAC enforcement
+- Admin user management and role request handling
+- Student role upgrade request form
+- Dashboard statistics and secure content panels
 
----
+## Project Structure
+- `Program.cs` - application entry point
+- `Data/DatabaseHelper.cs` - SQL Server connection and authentication logic
+- `Data/Models.cs` - shared data models and session state
+- `Forms/LoginForm.cs` - secure login experience
+- `Forms/MainDashboardForm.cs` - role-driven main interface
+- `Forms/Theme.cs` - shared dark UI palette
 
-## 📌 Project Overview
+## Database Schema
+Create the following tables in SQL Server:
 
-SSRMS is a secure academic management system that protects sensitive student information such as:
+```sql
+CREATE TABLE Users (
+    Username NVARCHAR(50) PRIMARY KEY,
+    PasswordHash NVARCHAR(256) NOT NULL,
+    PasswordSalt NVARCHAR(256) NOT NULL,
+    Role NVARCHAR(32) NOT NULL,
+    ClearanceLevel INT NOT NULL,
+    FullName NVARCHAR(128) NOT NULL,
+    Department NVARCHAR(64),
+    Email NVARCHAR(128)
+);
 
-- Student Profiles
-- Grades
-- Attendance Records
-- User Accounts
-- Course Information
+CREATE TABLE Students (
+    StudentId INT IDENTITY PRIMARY KEY,
+    FullName NVARCHAR(128),
+    Program NVARCHAR(64),
+    YearLevel INT,
+    ClearanceLevel INT
+);
 
-The project demonstrates the practical implementation of multiple database security models using **Microsoft SQL Server**.
+CREATE TABLE Instructors (
+    InstructorId INT IDENTITY PRIMARY KEY,
+    FullName NVARCHAR(128),
+    Department NVARCHAR(64),
+    ClearanceLevel INT
+);
 
----
+CREATE TABLE Courses (
+    CourseCode NVARCHAR(16) PRIMARY KEY,
+    Title NVARCHAR(128),
+    Department NVARCHAR(64),
+    PublicInfo NVARCHAR(256)
+);
 
-## 🚀 Features
+CREATE TABLE Grades (
+    GradeId INT IDENTITY PRIMARY KEY,
+    StudentId INT REFERENCES Students(StudentId),
+    CourseCode NVARCHAR(16) REFERENCES Courses(CourseCode),
+    CourseTitle NVARCHAR(128),
+    Score DECIMAL(5,2),
+    Term NVARCHAR(32)
+);
 
-### 🔑 Authentication & Authorization
+CREATE TABLE Attendance (
+    AttendanceId INT IDENTITY PRIMARY KEY,
+    StudentId INT REFERENCES Students(StudentId),
+    CourseCode NVARCHAR(16) REFERENCES Courses(CourseCode),
+    Date DATETIME,
+    Status NVARCHAR(32)
+);
 
-- Secure Login System
-- Password Hashing
-- User Authentication
-- Role-Based Access Control (RBAC)
-
-### 👥 User Roles
-
-The system supports five different roles:
-
-| Role | Permissions |
-|--------|-------------|
-| Admin | Full Access |
-| Instructor | Manage Grades & Attendance |
-| TA | Attendance Management |
-| Student | View Own Data |
-| Guest | View Public Information |
-
----
-
-## 🛡 Security Models Implemented
-
-### 1. Role-Based Access Control (RBAC)
-
-- SQL Roles
-- GRANT / REVOKE / DENY
-- Role-based GUI restrictions
-- Permission verification
-
-### 2. Multi-Level Security (MLS)
-
-Implemented using Bell-LaPadula Model:
-
-- No Read Up (NRU)
-- No Write Down (NWD)
-
-Security Levels:
-
-- Top Secret
-- Secret
-- Confidential
-- Unclassified
-
-### 3. Inference Control
-
-- Restricted Views
-- Query Set Size Control
-- Protection Against Data Disclosure
-
-### 4. Flow Control
-
-- Prevents unauthorized movement of classified data
-- Blocks data leakage between security levels
-
-### 5. Encryption at Rest
-
-Sensitive information is encrypted using AES:
-
-- Passwords
-- Student IDs
-- Phone Numbers
-- Grades
-
----
-
-## 🗄 Database Schema
-
-### Main Tables
-
-- Students
-- Instructors
-- Courses
-- Grades
-- Attendance
-- Users
-- RoleRequests
-
----
-
-## 📊 Security Matrix
-
-| Function | Admin | Instructor | TA | Student | Guest |
-|-----------|--------|------------|----|---------|-------|
-| View Profile | ✅ | ✅ | ✅ | ✅ | ❌ |
-| Edit Profile | ✅ | ✅ | ✅ | ❌ | ❌ |
-| View Grades | ✅ | ✅ | ❌ | ❌ | ❌ |
-| Edit Grades | ✅ | ✅ | ❌ | ❌ | ❌ |
-| View Attendance | ✅ | ✅ | ✅ | Own Only | ❌ |
-| Manage Users | ✅ | ❌ | ❌ | ❌ | ❌ |
-| View Courses | ✅ | ✅ | ✅ | ✅ | ✅ |
-
----
-
-## 🔄 Role Request Workflow
-
-Students can request role upgrades:
-
-- Student → TA
-- TA → Instructor
-
-### Request Process
-
-1. User submits a request.
-2. Request is stored in RoleRequests table.
-3. Status becomes Pending.
-4. Admin reviews the request.
-5. Admin approves or denies.
-6. User role is updated if approved.
-
----
-
-## 💻 Technologies Used
-
-### Database
-
-- Microsoft SQL Server
-- Stored Procedures
-- Views
-- Triggers
-- SQL Roles
-
-### Application
-
-- GUI Application
-- SQL Server Integration
-
-### Security
-
-- RBAC
-- MLS
-- AES Encryption
-- Flow Control
-- Inference Control
-
----
-
-## 📂 Project Structure
-
-```text
-SSRMS
-│
-├── Database
-│   ├── Tables.sql
-│   ├── Views.sql
-│   ├── Procedures.sql
-│   ├── Roles.sql
-│
-├── GUI
-│
-├── Documentation
-│
-├── Screenshots
-│
-└── README.md
+CREATE TABLE RoleRequests (
+    RequestId INT IDENTITY PRIMARY KEY,
+    Username NVARCHAR(50) REFERENCES Users(Username),
+    CurrentRole NVARCHAR(32),
+    RequestedRole NVARCHAR(32),
+    Justification NVARCHAR(512),
+    RequestDate DATETIME,
+    Status NVARCHAR(32)
+);
 ```
 
----
+## Setup
+1. Open the project in Visual Studio.
+2. Update the connection string in `Data/DatabaseHelper.cs`.
+3. Build and run the app.
+4. Seed an admin user by calling `DatabaseHelper.CreateAccount(...)` or insert a hashed user manually.
 
-## 🎯 Learning Outcomes
-
-This project demonstrates:
-
-- Database Design
-- SQL Server Security
-- Access Control Models
-- Data Encryption
-- Secure Authentication
-- Security-Aware System Design
-
----
-
-## 👨‍💻 Team
-
-Database Security Course Project
-
-Faculty of Computer Science and Information Technology
-
-Helwan National University
-
----
-
-## ⭐ Project Highlights
-
-✔ Role-Based Access Control (RBAC)
-
-✔ Multi-Level Security (MLS)
-
-✔ Inference Control
-
-✔ Flow Control
-
-✔ AES Encryption
-
-✔ Secure Authentication
-
-✔ Role Upgrade Workflow
-
-✔ SQL Server Implementation
+## Notes
+- The application uses role-based access and session tracking.
+- UI uses a dark palette and responsive panel layout for a professional look.
+- Add additional forms or modules for deeper role-specific workflows.
