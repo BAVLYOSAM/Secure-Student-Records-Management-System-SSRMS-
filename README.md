@@ -1,198 +1,223 @@
-# Database Security RBAC System
+# 🔐 Secure Student Records Management System (SSRMS)
 
-A secure Role-Based Access Control (RBAC) system developed as a Database Security course project.
+A secure database-driven system for managing student academic records while enforcing advanced Database Security concepts including RBAC, MLS, Flow Control, Inference Control, Encryption, and Role Request Management.
 
-The system provides user authentication, role management, role request workflows, and administrative approval processes while enforcing security principles and preventing unauthorized privilege escalation.
-
----
-
-## Overview
-
-This project implements a secure user management platform based on RBAC (Role-Based Access Control).
-
-Users can register, log in, and request role upgrades. Administrators review and approve or deny role requests through a dedicated dashboard.
-
-The system ensures that users cannot assign roles to themselves and all role changes must be approved by an administrator.
+Developed as part of the **Database Security Course**.
 
 ---
 
-## Features
+## 📌 Project Overview
 
-### Authentication & Authorization
+SSRMS is a secure academic management system that protects sensitive student information such as:
 
-- User Registration
-- Secure Login
-- Password Protection
-- Session Management
+- Student Profiles
+- Grades
+- Attendance Records
+- User Accounts
+- Course Information
+
+The project demonstrates the practical implementation of multiple database security models using **Microsoft SQL Server**.
+
+---
+
+## 🚀 Features
+
+### 🔑 Authentication & Authorization
+
+- Secure Login System
+- Password Hashing
+- User Authentication
 - Role-Based Access Control (RBAC)
 
-### User Roles
+### 👥 User Roles
 
-The system supports multiple roles such as:
+The system supports five different roles:
 
-- Student
-- Instructor
-- Teaching Assistant
-- Admin
-
-Roles can be customized based on project requirements.
-
----
-
-### Role Request System
-
-Users can submit requests to change their current role.
-
-Each request contains:
-
-- Username
-- Current Role
-- Requested Role
-- Reason
-- Submission Date
-- Request Status
-
-Request statuses include:
-
-- Pending
-- Approved
-- Denied
+| Role | Permissions |
+|--------|-------------|
+| Admin | Full Access |
+| Instructor | Manage Grades & Attendance |
+| TA | Attendance Management |
+| Student | View Own Data |
+| Guest | View Public Information |
 
 ---
 
-### Admin Dashboard
+## 🛡 Security Models Implemented
 
-Administrators can view all pending role requests.
+### 1. Role-Based Access Control (RBAC)
 
-The dashboard displays:
+- SQL Roles
+- GRANT / REVOKE / DENY
+- Role-based GUI restrictions
+- Permission verification
 
-- Username
-- Current Role
-- Requested Role
-- Reason
-- Date Submitted
-- Status
+### 2. Multi-Level Security (MLS)
 
-Admin actions:
+Implemented using Bell-LaPadula Model:
 
-- Approve Request
-- Deny Request
+- No Read Up (NRU)
+- No Write Down (NWD)
 
----
+Security Levels:
 
-### Approval Workflow
+- Top Secret
+- Secret
+- Confidential
+- Unclassified
 
-When approved:
+### 3. Inference Control
 
-- User role is updated in the Users table.
-- Request status becomes "Approved".
+- Restricted Views
+- Query Set Size Control
+- Protection Against Data Disclosure
 
-When denied:
+### 4. Flow Control
 
-- User role remains unchanged.
-- Request status becomes "Denied".
+- Prevents unauthorized movement of classified data
+- Blocks data leakage between security levels
 
----
+### 5. Encryption at Rest
 
-### Security Features
+Sensitive information is encrypted using AES:
 
-- Principle of Least Privilege
-- Role-Based Access Control
-- Secure Authentication
-- Controlled Role Escalation
-- Audit-Friendly Request Tracking
-- Prevention of Unauthorized Privilege Changes
-
----
-
-## Database Design
-
-### Users Table
-
-| Column |
-|----------|
-| UserID |
-| Username |
-| Email |
-| Password |
-| Role |
+- Passwords
+- Student IDs
+- Phone Numbers
+- Grades
 
 ---
 
-### RoleRequests Table
+## 🗄 Database Schema
 
-| Column |
-|----------|
-| RequestID |
-| UserID |
-| CurrentRole |
-| RequestedRole |
-| Reason |
-| Status |
-| CreatedAt |
+### Main Tables
 
----
-
-## System Workflow
-
-1. User registers or logs in.
-2. User submits a role request.
-3. Request is stored in the RoleRequests table.
-4. Status is set to Pending.
-5. Admin reviews request.
-6. Admin approves or denies.
-7. System updates records accordingly.
+- Students
+- Instructors
+- Courses
+- Grades
+- Attendance
+- Users
+- RoleRequests
 
 ---
 
-## Technologies Used
+## 📊 Security Matrix
 
-### Frontend
-- HTML5
-- CSS3
-- JavaScript
+| Function | Admin | Instructor | TA | Student | Guest |
+|-----------|--------|------------|----|---------|-------|
+| View Profile | ✅ | ✅ | ✅ | ✅ | ❌ |
+| Edit Profile | ✅ | ✅ | ✅ | ❌ | ❌ |
+| View Grades | ✅ | ✅ | ❌ | ❌ | ❌ |
+| Edit Grades | ✅ | ✅ | ❌ | ❌ | ❌ |
+| View Attendance | ✅ | ✅ | ✅ | Own Only | ❌ |
+| Manage Users | ✅ | ❌ | ❌ | ❌ | ❌ |
+| View Courses | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-### Backend
-- PHP / Node.js / ASP.NET (depending on implementation)
+---
+
+## 🔄 Role Request Workflow
+
+Students can request role upgrades:
+
+- Student → TA
+- TA → Instructor
+
+### Request Process
+
+1. User submits a request.
+2. Request is stored in RoleRequests table.
+3. Status becomes Pending.
+4. Admin reviews the request.
+5. Admin approves or denies.
+6. User role is updated if approved.
+
+---
+
+## 💻 Technologies Used
 
 ### Database
-- MySQL
-- SQL Server
 
----
+- Microsoft SQL Server
+- Stored Procedures
+- Views
+- Triggers
+- SQL Roles
 
-## Security Concepts Applied
+### Application
 
-- Authentication
-- Authorization
+- GUI Application
+- SQL Server Integration
+
+### Security
+
 - RBAC
-- Access Control Policies
-- Privilege Management
-- Database Security Best Practices
+- MLS
+- AES Encryption
+- Flow Control
+- Inference Control
 
 ---
 
-## Project Structure
+## 📂 Project Structure
 
 ```text
-Database-Security-RBAC-System/
+SSRMS
 │
-├── frontend/
-│   ├── login
-│   ├── register
-│   ├── dashboard
+├── Database
+│   ├── Tables.sql
+│   ├── Views.sql
+│   ├── Procedures.sql
+│   ├── Roles.sql
 │
-├── backend/
-│   ├── controllers
-│   ├── services
-│   ├── middleware
+├── GUI
 │
-├── database/
-│   ├── schema.sql
-│   ├── seed.sql
+├── Documentation
 │
-├── screenshots/
+├── Screenshots
 │
-├── README.md
-│
-└── LICENSE
+└── README.md
+```
+
+---
+
+## 🎯 Learning Outcomes
+
+This project demonstrates:
+
+- Database Design
+- SQL Server Security
+- Access Control Models
+- Data Encryption
+- Secure Authentication
+- Security-Aware System Design
+
+---
+
+## 👨‍💻 Team
+
+Database Security Course Project
+
+Faculty of Computer Science and Information Technology
+
+Helwan National University
+
+---
+
+## ⭐ Project Highlights
+
+✔ Role-Based Access Control (RBAC)
+
+✔ Multi-Level Security (MLS)
+
+✔ Inference Control
+
+✔ Flow Control
+
+✔ AES Encryption
+
+✔ Secure Authentication
+
+✔ Role Upgrade Workflow
+
+✔ SQL Server Implementation
