@@ -1,6 +1,5 @@
-# SSRMS - Secure Student Records Management System
-using sql server
-## Overview
+# SSRMS - Secure Student Records Management System(using sql server)
+using sql server## Overview
 A Windows Forms application with a modern dark-themed dashboard and role-based access control for university student record management.
 
 ## Features
